@@ -1,59 +1,78 @@
 import { useState } from "react";
-import API from '../services/api';
-import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate, Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
+import API from "../services/api";
 
-function Login() {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
+  const { setTheme, theme } = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await API.post('/auth/login', {
-        email,
-        password
-      });
-
+      const res = await API.post("/auth/login", { email, password });
       alert(res.data.message);
-      console.log("Token:", res.data.token);
-      //save token
-      localStorage.setItem('token', res.data.token);
-      // Redirect or show dashboard
+      localStorage.setItem("token", res.data.token);
       setUser({ token: res.data.token });
-      navigate('/');
-
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Login Failed!");
     }
-    // console.log("Email:", email);
-    // console.log("Password:", password);
-
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-muted text-foreground px-4">
+      <div className="absolute top-4 right-4">
+        <Button variant="ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+          {theme === "dark" ? <Sun /> : <Moon />}
+        </Button>
+      </div>
 
-        <input type="email" placeholder="Email" value={email}
-          onChange={(e) => setEmail(e.target.value)} required />
+      <Card className="w-full max-w-sm shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">Login to Your Account</CardTitle>
+        </CardHeader>
 
-        <input type="password" placeholder="Password" value={password}
-          onChange={(e) => setPassword(e.target.value)} required />
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <Input
+              className="text-black dark:text-white"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              className="text-black dark:text-white" type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-        <button type="submit">Login Button</button>
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
 
-        <p>Not registered yet? <a href="/register">Click to register</a></p>
-
-      </form>
+            <p className="text-center text-sm text-muted-foreground">
+              Not registered yet?{" "}
+              <Link to="/register" className="text-primary underline">
+                Register Here
+              </Link>
+            </p>
+          </form>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }
-
-export default Login;
