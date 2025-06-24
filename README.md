@@ -30,10 +30,11 @@ A scalable, full-stack Online Judge web application built using the MERN stack (
 ---
 
 ## 📂 Project Structure
-
+```bash
 online-judge/
 ├── online-judge-frontend/ # React frontend (Vite)
 ├── online-judge-backend/ # Express backend (with MongoDB)
+```
 
 ## 🔐 Auth Flow
 
