@@ -6,7 +6,15 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        "muted-foreground": "hsl(var(--muted-foreground))",
+      },
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

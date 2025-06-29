@@ -9,20 +9,27 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import API from "../services/api";
 
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/authSlice';
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext);
-  const { setTheme, theme } = useTheme();
+  const dispatch = useDispatch();
+  const { theme, setTheme } = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await API.post("/auth/login", { email, password });
+      dispatch(setCredentials({
+      user: res.data.user,
+      token: res.data.token,
+    }));
       alert(res.data.message);
-      localStorage.setItem("token", res.data.token);
-      setUser({ token: res.data.token });
+      // localStorage.setItem("token", res.data.token);
+      // setUser({ token: res.data.token });
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -46,14 +53,17 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
-              className="text-black dark:text-white"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
+              // className="bg-muted text-foreground"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-            />
+              />
             <Input
-              className="text-black dark:text-white" type="password"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450" 
+              // className="bg-muted text-foreground"
+              type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

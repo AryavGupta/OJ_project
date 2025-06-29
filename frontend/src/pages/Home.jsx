@@ -1,21 +1,22 @@
-import { AuthContext } from "../context/AuthContext";
-import { useContext } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import { logout } from '../redux/authSlice';
 
 function Home() {
-  const { setUser } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+    dispatch(logout());
     navigate('/login');
   }
 
   return (
     <div>
       <h1>Welcome to ONLINE JUDGE!!</h1>
-
+      {user && <h3>Hello, {user.username}</h3>}
+      
       <button onClick={handleLogout}>Logout</button>
       
     </div>

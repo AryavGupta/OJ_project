@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const {setTheme, theme} = useTheme();
+  const { setTheme, theme } = useTheme();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,12 +32,11 @@ export default function RegisterPage() {
         email,
         password
       });
-      console.log("Registration successful:", res.data);
       alert("Registration successful!");
       navigate('/login');
     } catch (err) {
       console.error("Registration failed:", err);
-      alert("Something went wrong!");
+      alert(err.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -56,7 +55,8 @@ export default function RegisterPage() {
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             <Input
-              className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
+              // className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
               type="text"
               placeholder="Name"
               value={name}
@@ -64,7 +64,7 @@ export default function RegisterPage() {
               required
             />
             <Input
-              className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
               type="text"
               placeholder="Username"
               value={username}
@@ -72,7 +72,7 @@ export default function RegisterPage() {
               required
             />
             <Input
-              className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
               type="email"
               placeholder="Email"
               value={email}
@@ -80,7 +80,7 @@ export default function RegisterPage() {
               required
             />
             <Input
-              className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
               type="password"
               placeholder="Password"
               value={password}
@@ -88,7 +88,7 @@ export default function RegisterPage() {
               required
             />
             <Input
-              className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}

@@ -1,31 +1,28 @@
 import { Route, Routes, Navigate } from 'react-router-dom'
-import { useState, useContext } from 'react'
+import { useSelector } from 'react-redux';
 
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
-import { AuthContext } from './context/AuthContext'
+// import { AuthContext } from './context/AuthContext'
 
 import './App.css'
 
-
 function App() {
-  // const [count, setCount] = useState(0)
-  const { user } = useContext(AuthContext);
+  const { token } = useSelector((state) => state.auth);
 
   return (
     <Routes>
+
       <Route path="/" element={
         <ProtectedRoute>
           <Home />
         </ProtectedRoute>
       } />
 
-      <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-      {/* <Route path="/login" element={<Login />} /> */}
-      {/* <Route path="/register" element={<Register />} /> */}
+      <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
+      <Route path="/register" element={token ? <Navigate to="/" /> : <Register />} />
 
     </Routes>
   );
