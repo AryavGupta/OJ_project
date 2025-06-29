@@ -25,7 +25,7 @@ export default function LoginPage() {
       user: res.data.user,
       token: res.data.token,
     }));
-      alert(res.data.message);
+
       // localStorage.setItem("token", res.data.token);
       // setUser({ token: res.data.token });
       navigate("/");

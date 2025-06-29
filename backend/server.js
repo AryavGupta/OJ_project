@@ -6,12 +6,14 @@ dotenv.config();
 const app = express();
 const connectDB = require('./database/db');
 const authRoutes = require('./routes/authRoutes');
+const problemRoutes = require('./routes/problemRoutes');
 
 // middleware
 app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/problems', problemRoutes);
 
 connectDB();
 
