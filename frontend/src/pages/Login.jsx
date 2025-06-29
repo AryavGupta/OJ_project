@@ -3,8 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import API from "../services/api";
