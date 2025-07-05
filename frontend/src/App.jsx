@@ -10,6 +10,7 @@ import AddProblem from './pages/AddProblem';
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import EditProblem from './pages/EditProblem';
+import ProblemDetail from './pages/ProblemDetail';
 
 function App() {
   const { token } = useSelector((state) => state.auth);
@@ -34,6 +35,14 @@ function App() {
         <AdminProtectedRoute>
           <EditProblem />
         </AdminProtectedRoute>
+      }
+      />
+
+      <Route path="/problem/:id" 
+      element = {
+        <ProtectedRoute>
+          <ProblemDetail />
+        </ProtectedRoute>
       }
       />
 
