@@ -50,7 +50,7 @@ function AddProblem() {
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-
+    
       <Card className="w-full max-w-lg">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">

@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useReducer, useState } from "react";
-import API from "../services/api";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Navbar from "../components/Navbar";
 import Editor from '@monaco-editor/react';
 import { useTheme } from "next-themes";
+import API from "../services/api";
+import API_COMPILER from "../services/apiCompiler";
 
 const languages = ["cpp", "python", "java"];
 
@@ -13,7 +14,21 @@ function ProblemDetail() {
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
   const [language, setLanguage] = useState("cpp");
-  const [code, setCode] = useState("// Write your code here");
+  // const [code, setCode] = useState("// Write your code here");
+  const [code, setCode] = useState(`// Write your code here\n
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    cout << "Hello World!";
+    return 0;
+}`);
+
+  const [sampleTest, setSampleTest] = useState(null);
+  const [customInput, setCustomInput] = useState("");
+  const [output, setOutput] = useState("")
+
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { theme } = useTheme();
 
@@ -22,21 +37,81 @@ function ProblemDetail() {
       try {
         const res = await API.get(`/problems/${id}`);
         setProblem(res.data);
+
+        const testRes = await API.get(`/testcases/${id}`);
+        const samples = testRes.data.filter(tc => tc.isSample);
+        if (samples.length > 0) {
+          setSampleTest(samples[0]);
+          setCustomInput(samples[0].input);
+        }
+
       } catch (err) {
-        console.error("Error loading problem : ", err);
+        console.error("Error loading problem/test cases: ", err);
       }
     };
     fetchProblem();
   }, [id]);
 
-  const handleRun = () => {
-    console.log("Run Code:", { language, code });
-    // later: send to compiler microservice
+  const handleRun = async () => {
+    setLoading(true);
+    setOutput("");
+    try {
+      const res = await API_COMPILER.post("/run", {
+        language, code, input: customInput,
+      });
+      if (res.data.output) {
+        setOutput(res.data.output);
+      }
+      else {
+        setOutput(res.data.error || "Something went wrong");
+      }
+    } catch (err) {
+      console.error("Run error: ", err);
+      const errMsg =
+        err.response?.data?.error || err.message || "Unknown server error";
+      setOutput(errMsg)
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = () => {
-    console.log("Submit Code:", { language, code });
-    // later: submit to backend for full evaluation
+  const handleSubmit = async () => {
+    setLoading(true);
+    setOutput("");
+
+    try {
+      const res = await API.post('/submissions', {
+        code,
+        language,
+        problemId: id,
+      });
+
+      if (res.data.verdict === "Accepted") {
+        setOutput("✅ All test cases passed successfully!");
+      }
+      else if (res.data.verdict && res.data.testCaseResults) {
+        const failedCase = res.data.testCaseResults.find(tc => !tc.passed);
+        if (failedCase) {
+          setOutput(
+            `Failed Test Case\n\n` +
+            `Input:\n${failedCase.input}\n\n` +
+            `Expected:\n${failedCase.expectedOutput}\n\n` +
+            `Got:\n${failedCase.actualOutput}`
+          );
+        }
+      }
+      else {
+        setOutput("Unknown response from server.");
+      }
+
+    } catch (err) {
+      const errMsg = err.response?.data?.error || err.message;
+      setOutput(`Compilation Error\n\n${errMsg}`);
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   if (!problem) return <p>Loading....</p>
@@ -109,22 +184,37 @@ function ProblemDetail() {
               automaticLayout: true,
             }}
           />
-          {/* <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            rows={18}
-            className="w-full font-mono p-3 rounded border bg-neutral-900 text-white"
-          /> */}
 
-          <div className="flex gap-4">
-            <Button onClick={handleRun} className="w-1/2">
-              Run
-            </Button>
-            <Button onClick={handleSubmit} className="w-1/2">
-              Submit
-            </Button>
+          <div className="flex flex-col gap-4 mt-4">
+            <textarea
+              placeholder="Optional Input"
+              rows={4}
+              className="w-full p-2 rounded bg-muted text-foreground"
+              value={customInput}
+              onChange={(e) => setCustomInput(e.target.value)}
+            />
+
+            {/* Sample Output Display */}
+            {/* {sampleTest && (
+              <div className="text-sm text-muted-foreground">
+                <p className="font-semibold mb-1">Sample Output:</p>
+                <pre className="bg-muted p-2 rounded">{sampleTest.output}</pre>
+              </div>
+            )} */}
+
+            <div className="flex gap-4">
+              <Button onClick={handleRun} className="w-1/2" disabled={loading}>
+                {loading ? "Running..." : "Run"}
+              </Button>
+              <Button onClick={handleSubmit} className="w-1/2">
+                Submit
+              </Button>
+            </div>
+            <div className="bg-black text-white p-4 rounded mt-4">
+              <h4 className="font-bold mb-2">Output:</h4>
+              <pre className="whitespace-pre-wrap">{output}</pre>
+            </div>
           </div>
-
           {/* Optional: Future AI Support */}
           <div className="mt-2 bg-muted p-2 rounded text-sm text-center">
             💡 AI support coming soon...
