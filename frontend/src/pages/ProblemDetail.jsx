@@ -14,7 +14,6 @@ function ProblemDetail() {
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
   const [language, setLanguage] = useState("cpp");
-  // const [code, setCode] = useState("// Write your code here");
   const [code, setCode] = useState(`// Write your code here\n
 #include <bits/stdc++.h>
 using namespace std;
@@ -28,6 +27,8 @@ int main() {
   const [customInput, setCustomInput] = useState("");
   const [output, setOutput] = useState("")
 
+  const [verdict, setVerdict] = useState("");
+  const [failedTest, setFailedTest] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -79,6 +80,8 @@ int main() {
   const handleSubmit = async () => {
     setLoading(true);
     setOutput("");
+    setVerdict("");
+    setFailedTest(null);
 
     try {
       const res = await API.post('/submissions', {
@@ -89,10 +92,13 @@ int main() {
 
       if (res.data.verdict === "Accepted") {
         setOutput("✅ All test cases passed successfully!");
+        setVerdict("Accepted");
       }
       else if (res.data.verdict && res.data.testCaseResults) {
         const failedCase = res.data.testCaseResults.find(tc => !tc.passed);
         if (failedCase) {
+          setVerdict("Failed");
+          setFailedTest(failedCase);
           setOutput(
             `Failed Test Case\n\n` +
             `Input:\n${failedCase.input}\n\n` +
@@ -100,19 +106,19 @@ int main() {
             `Got:\n${failedCase.actualOutput}`
           );
         }
-      }
-      else {
+      } else {
         setOutput("Unknown response from server.");
+        setVerdict("Unknown");
       }
-
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message;
       setOutput(`Compilation Error\n\n${errMsg}`);
-    }
-    finally {
+      setVerdict("Compilation Error");
+    } finally {
       setLoading(false);
     }
   };
+
 
   if (!problem) return <p>Loading....</p>
 
@@ -194,26 +200,62 @@ int main() {
               onChange={(e) => setCustomInput(e.target.value)}
             />
 
-            {/* Sample Output Display */}
-            {/* {sampleTest && (
-              <div className="text-sm text-muted-foreground">
-                <p className="font-semibold mb-1">Sample Output:</p>
-                <pre className="bg-muted p-2 rounded">{sampleTest.output}</pre>
-              </div>
-            )} */}
-
             <div className="flex gap-4">
               <Button onClick={handleRun} className="w-1/2" disabled={loading}>
-                {loading ? "Running..." : "Run"}
+                {loading ? "Executing..." : "Run Code"}
               </Button>
-              <Button onClick={handleSubmit} className="w-1/2">
-                Submit
+              <Button onClick={handleSubmit} className="w-1/2" disabled={loading}>
+                {loading ? "Submitting..." : "Submit"}
               </Button>
             </div>
-            <div className="bg-black text-white p-4 rounded mt-4">
-              <h4 className="font-bold mb-2">Output:</h4>
-              <pre className="whitespace-pre-wrap">{output}</pre>
-            </div>
+            {output && (
+              <div className="bg-card text-foreground p-4 rounded shadow-md border border-border mt-4 space-y-3">
+                <h4 className="font-semibold text-lg">Output:</h4>
+
+                {verdict === "Accepted" ? (
+                  <p className="text-green-600 font-semibold bg-muted p-2 rounded text-sm">
+                    ✅ All test cases passed successfully!
+                  </p>
+                ) : verdict === "Compilation Error" ? (
+                  <div>
+                    <p className="text-red-500 font-semibold mb-2">Compilation Error</p>
+                    <pre className="bg-muted p-3 rounded whitespace-pre-wrap text-sm border border-destructive">
+                      {output.replace("Compilation Error", "").trim()}
+                    </pre>
+                  </div>
+                ) : verdict === "Failed" && failedTest ? (
+                  <div className="space-y-3 text-sm">
+                    <p className="text-red-500 font-semibold">Failed Test Case</p>
+
+                    <div>
+                      <p className="font-semibold mb-1">Input:</p>
+                      <pre className="bg-muted p-2 rounded whitespace-pre-wrap border">
+                        {failedTest.input}
+                      </pre>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold mb-1">Expected Output:</p>
+                      <pre className="bg-muted p-2 rounded whitespace-pre-wrap border">
+                        {failedTest.expectedOutput}
+                      </pre>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold mb-1">Your Output:</p>
+                      <pre className="bg-muted p-2 rounded whitespace-pre-wrap border">
+                        {failedTest.actualOutput}
+                      </pre>
+                    </div>
+                  </div>
+                ) : (
+                  <pre className="bg-muted p-3 rounded whitespace-pre-wrap text-sm border">
+                    {output}
+                  </pre>
+                )}
+              </div>
+            )}
+
           </div>
           {/* Optional: Future AI Support */}
           <div className="mt-2 bg-muted p-2 rounded text-sm text-center">
