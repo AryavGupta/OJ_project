@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import EditProblem from './pages/EditProblem';
 import ProblemDetail from './pages/ProblemDetail';
+import TestCaseManager from './pages/TestCaseManager';
 
 function App() {
   const { token } = useSelector((state) => state.auth);
@@ -37,7 +38,6 @@ function App() {
         </AdminProtectedRoute>
       }
       />
-
       <Route path="/problem/:id" 
       element = {
         <ProtectedRoute>
@@ -45,6 +45,7 @@ function App() {
         </ProtectedRoute>
       }
       />
+      <Route path="/manage-testcases/:problemId" element={<TestCaseManager />} />
 
     </Routes>
   );

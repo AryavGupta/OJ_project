@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
 import { fetchProblems, deleteProblem } from '../redux/problemSlice';
 import Navbar from '../components/Navbar';
+import { Button } from "@/components/ui/button";
 
 function Home() {
   const dispatch = useDispatch();
@@ -33,12 +34,12 @@ function Home() {
         <h2 className='text-2xl font-semibold mb-4'>Problem List</h2>
 
         {user?.userType === 'admin' && (
-          <button
-            className='mb-4 px-4 py-2 bg-blue-600 text-white rounded'
+          <Button 
+            className='mb-4'
             onClick={() => navigate('/add-problem')}
           >
             Add Problem
-          </button>
+          </Button>
         )}
 
         {loading ? (
@@ -52,7 +53,7 @@ function Home() {
                 <th className="p-2 border">Title</th>
                 <th className="p-2 border">Difficulty</th>
                 <th className="p-2 border">Tags</th>
-                {user?.userType === 'admin' && <th className="p-2 border">Actions</th>}
+                {user?.userType === 'admin' && <th className="p-2 border w-64">Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -70,24 +71,40 @@ function Home() {
 
                   {user?.userType === 'admin' && (
                     <td className="p-2 border">
-                      <button
-                        className="mr-2 px-2 py-1 bg-yellow-400 rounded"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/edit-problem/${problem._id}`);
-                        }}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className="px-2 py-1 bg-red-500 text-white rounded"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(problem._id);
-                        }}
-                      >
-                        ❌ Delete
-                      </button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 px-3 text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/edit-problem/${problem._id}`);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="h-8 px-3 text-xs shadow-red-500/50 shadow-md border border-red-600"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(problem._id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                        <Button 
+                          size="sm"
+                          className="h-8 px-3 text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/manage-testcases/${problem._id}`);
+                          }}
+                        >
+                          Test Cases
+                        </Button>
+                      </div>
                     </td>
                   )}
                 </tr>

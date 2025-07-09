@@ -12,7 +12,7 @@ if (!fs.existsSync(outputsDir)) fs.mkdirSync(outputsDir);
 const executeCode = (language, code, input = "") => {
   return new Promise((resolve, reject) => {
     const jobId = uuid();
-    let filename, filepath, execCmd;
+    let filename, filepath;
 
     // save code to file
     if (language === "cpp") {
@@ -103,7 +103,7 @@ const executeCode = (language, code, input = "") => {
           console.warn("Cleanup failed (Java):", e.message);
         }
       };
-
+ 
       exec(compileCmd, (compileErr, _, compileStderr) => {
         if (compileErr || compileStderr) {
           cleanup();

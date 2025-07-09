@@ -47,7 +47,7 @@ router.post('/', protect, async (req, res) => {
 
       } catch (err) {
         console.error("Compiler error : ", err.response?.data || err.message);
-        return res.status(200).json({
+        return res.status(500).json({
           verdict: "Compilation Error",
           testCaseResults: [],
           error: err.response?.data?.error || "Compilation failed.",
@@ -72,5 +72,5 @@ router.post('/', protect, async (req, res) => {
     res.status(500).json({ message: "Internal server error!" });
   }
 });
-
+ 
 module.exports = router;
