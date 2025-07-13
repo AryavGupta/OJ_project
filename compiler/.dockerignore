@@ -1,0 +1,14 @@
+# Ignore node modules
+node_modules
+
+# Logs
+*.log
+logs
+npm-debug.log*
+
+# Environment
+.env
+
+# Git stuff
+.git
+.gitignore
