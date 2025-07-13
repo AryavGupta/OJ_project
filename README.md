@@ -1,4 +1,4 @@
-# 👨‍💻 MERN Online Judge
+# 👨‍💻 Codeon - MERN Online Judge
 
 A scalable, full-stack Online Judge web application built using the MERN stack (MongoDB, Express, React, Node.js). Users can register, login, solve coding problems, and get real-time verdicts.
 
