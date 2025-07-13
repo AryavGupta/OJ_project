@@ -9,5 +9,4 @@ RUN apk update && apk add --no-cache \
 COPY . .  
 RUN npm install
 EXPOSE 5001
-ENV PORT=5001
 CMD [ "node", "index.js" ]

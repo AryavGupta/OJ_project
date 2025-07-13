@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: oj-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:5000
+
+  backend:
+    build: ./backend
+    container_name: oj-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - compiler
+    environment:
+      - PORT=5000
+      - MONGO_URI=${MONGO_URI}  # Uses value from .env file
+      - JWT_SECRET=${JWT_SECRET}  # Uses value from .env file
+
+  compiler:
+    build: ./compiler
+    container_name: oj-compiler
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+
+networks:
+  default:
+    driver: bridge

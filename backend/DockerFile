@@ -1,3 +1,6 @@
-FROM node:24-apline3.22
+FROM node:18-alpine
 WORKDIR /app
-RUN apk update && apk add --no-cache g++
+COPY . .
+RUN npm install --only=production
+EXPOSE 5000
+CMD ["node", "server.js"]
