@@ -22,6 +22,7 @@ services:
       - PORT=5000
       - MONGO_URI=${MONGO_URI}  # Uses value from .env file
       - JWT_SECRET=${JWT_SECRET}  # Uses value from .env file
+      - COMPILER_SERVICE_URL=${COMPILER_SERVICE_URL} # Add this line
 
   compiler:
     build: ./compiler

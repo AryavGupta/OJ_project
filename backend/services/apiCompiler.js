@@ -1,9 +1,9 @@
-// backend/utils/apiCompiler.js
+// backend/services/apiCompiler.js
 const axios = require("axios");
 
 const API_COMPILER = axios.create({
-  baseURL: "http://localhost:5001", // 👈 change to env var in prod
-  timeout: 10000, // optional
+  baseURL: process.env.COMPILER_SERVICE_URL || "http://localhost:5001", // Default to localhost for local dev
+  timeout: 10000,
 });
 
 module.exports = API_COMPILER;
