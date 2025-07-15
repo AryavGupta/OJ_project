@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Navbar from "../components/Navbar";
 import Editor from '@monaco-editor/react';
+import ReactMarkdown from "react-markdown";
 import { useTheme } from "next-themes";
 import API from "../services/api";
 import API_COMPILER from "../services/apiCompiler";
@@ -28,6 +29,15 @@ int main() {
   const [customInput, setCustomInput] = useState("");
   const [output, setOutput] = useState("")
   const [isRunMode, setIsRunMode] = useState(false);
+
+  const [aiVisible, setAiVisible] = useState(false);
+  const [aiDefaultMode, setAiDefaultMode] = useState("hint");
+  const [aiPanelWidth, setAiPanelWidth] = useState(450);
+  const [isResizing, setIsResizing] = useState(false);
+
+  // Persistent AI response state
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiMode, setAiMode] = useState("hint");
 
   const [verdict, setVerdict] = useState("");
   const [failedTest, setFailedTest] = useState(null);
@@ -54,6 +64,37 @@ int main() {
     };
     fetchProblem();
   }, [id]);
+
+  // Handle resizing
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      
+      const newWidth = window.innerWidth - e.clientX;
+      const minWidth = 300;
+      const maxWidth = window.innerWidth * 0.8;
+      
+      setAiPanelWidth(Math.max(minWidth, Math.min(newWidth, maxWidth)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   const handleRun = async () => {
     setLoading(true);
@@ -103,6 +144,8 @@ int main() {
         if (failedCase) {
           setVerdict("Failed");
           setFailedTest(failedCase);
+          setAiDefaultMode("debug");
+          setAiVisible(true);
           setOutput(
             `Failed Test Case\n\n` +
             `Input:\n${failedCase.input}\n\n` +
@@ -209,7 +252,7 @@ int main() {
               <textarea
                 placeholder="Enter your input here..."
                 rows={Math.min(Math.max(2, customInput.split('\n').length), 4)}
-                className="w-full p-3 rounded bg-muted text-foreground border resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-y-auto max-h-24"
+                className="w-full p-3 rounded bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 value={customInput}
                 onChange={(e) => setCustomInput(e.target.value)}
                 style={{
@@ -284,15 +327,72 @@ int main() {
             )}
 
           </div>
-          {/* Optional: Future AI Support */}
-          <AIPanel
-            code={code}
-            problem={problem}
-            language={language}
-            failedTest={failedTest?.input || ""}
-          />
         </div>
       </div>
+
+      {/* Fixed Ask AI Button - Better styling and positioning */}
+      <div className="fixed right-4 bottom-4 z-40">
+        <button
+          onClick={() => {
+            setAiDefaultMode("hint");
+            setAiVisible(true);
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 border-2 border-blue-500"
+        >
+          🤖 Ask AI
+        </button>
+      </div>
+
+      {/* AI Panel Sliding Window - Resizable */}
+      {aiVisible && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+            onClick={() => setAiVisible(false)}
+          />
+
+          {/* AI Panel */}
+          <div
+            className="fixed top-0 right-0 h-full bg-background shadow-2xl border-l border-border z-50 transition-all duration-300 transform flex"
+            style={{ width: `${aiPanelWidth}px` }}
+          >
+            {/* Resize Handle */}
+            <div
+              className="w-1 bg-gray-300 dark:bg-gray-600 hover:bg-blue-500 cursor-ew-resize flex-shrink-0 transition-colors"
+              onMouseDown={() => setIsResizing(true)}
+              title="Drag to resize"
+            />
+            
+            {/* Panel Content */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="sticky top-0 bg-background border-b border-border p-4 flex justify-between items-center flex-shrink-0">
+                <h2 className="text-xl font-bold text-foreground">🤖 AI Assistant</h2>
+                <button
+                  onClick={() => setAiVisible(false)}
+                  className="text-red-500 hover:text-red-700 font-semibold px-3 py-1 rounded border border-red-300 hover:bg-red-50 transition-colors"
+                >
+                  ✕ Close
+                </button>
+              </div>
+              <div className="p-4 flex-1 overflow-y-auto">
+                <AIPanel
+                  code={code}
+                  problem={problem}
+                  language={language}
+                  failedTest={failedTest?.input || ""}
+                  defaultMode={aiDefaultMode}
+                  // Pass persistent state props
+                  aiResponse={aiResponse}
+                  setAiResponse={setAiResponse}
+                  aiMode={aiMode}
+                  setAiMode={setAiMode}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
