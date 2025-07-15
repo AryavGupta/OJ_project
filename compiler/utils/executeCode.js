@@ -46,7 +46,10 @@ const executeCode = (language, code, input = "") => {
           return reject(new Error(compileStdErr || compileErr.message));
         }
 
-        const runCmd = `timeout 5s "${outputFile}" < "${inputFilePath}"`;
+        const isWindows = process.platform === "win32";
+        const runCmd = isWindows
+          ? `"${outputFile}" < "${inputFilePath}"`
+          : `timeout 5s "${outputFile}" < "${inputFilePath}"`;
         exec(runCmd, { timeout: 6000 }, (runErr, stdout, stderr) => {
           cleanup();
           if (runErr) {

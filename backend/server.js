@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const problemRoutes = require('./routes/problemRoutes');
 const testcases = require('./routes/testcases');
 const submissions = require('./routes/submissions');
+const ai = require("./routes/ai")
 
 // middleware
 app.use(cors());
@@ -18,10 +19,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
 app.use('/api/testcases', testcases);
 app.use('/api/submissions', submissions);
+app.use("/api/ai", ai);
+
 
 connectDB();
 
-app.listen(process.env.PORT, () =>{
+app.listen(process.env.PORT, () => {
   console.log(`Server running on port : ${process.env.PORT}`);
 });
 

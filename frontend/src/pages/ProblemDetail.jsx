@@ -7,6 +7,7 @@ import Editor from '@monaco-editor/react';
 import { useTheme } from "next-themes";
 import API from "../services/api";
 import API_COMPILER from "../services/apiCompiler";
+import AIPanel from '../components/AIPanel';
 
 const languages = ["cpp", "python", "java"];
 
@@ -284,9 +285,12 @@ int main() {
 
           </div>
           {/* Optional: Future AI Support */}
-          <div className="mt-2 bg-muted p-2 rounded text-sm text-center">
-            💡 AI support coming soon...
-          </div>
+          <AIPanel
+            code={code}
+            problem={problem}
+            language={language}
+            failedTest={failedTest?.input || ""}
+          />
         </div>
       </div>
     </div>
