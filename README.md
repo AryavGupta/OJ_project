@@ -1,18 +1,30 @@
 # 👨‍💻 Codeon - MERN Online Judge
 
-A scalable, full-stack Online Judge web application built using the MERN stack (MongoDB, Express, React, Node.js). Users can register, login, solve coding problems, and get real-time verdicts.
+A scalable, full-stack Online Judge web application built using the MERN stack (MongoDB, Express, React, Node.js). Features real-time code submission, Docker-based evaluation, and AI-powered debugging assistance.
 
 ---
 
 ## 🚀 Features
 
-- 🧾 User Registration & Login (with token-based auth)
-- 🔐 Protected Routes for authenticated users
-- ✅ Real-time Code Submission (coming soon)
-- 👨‍🏫 Profile & Submissions History (upcoming)
-- 🧠 Admin Panel for problem creation (future)
-- 🧪 Docker-based code evaluation (future)
-- 🎯 Contests & Leaderboards (planned)
+### Core Features
+- 🧾 **User Registration & Login** (with token-based auth)
+- 🔐 **Protected Routes** for authenticated users
+- ✅ **Real-time Code Submission** with instant verdicts
+- 💻 **Multi-language Support** (C++, Python, Java)
+- 🐳 **Docker-based Code Execution** with secure sandboxing
+- 🧪 **Test Case Evaluation** with detailed failure reports
+- 🎯 **Problem Management** with custom input testing
+- 🧠 **Admin Panel for problem** creation
+
+### AI-Powered Features
+- 🤖 **AI Assistant** with 4 modes: Hint, Debug, Optimize, Explain
+- 🚫 **Rate Limiting**: 5 AI requests per user per day
+- 🔄 **Persistent Sessions** and **Resizable AI Panel**
+- 🧠 **Google Gemini API** integration for intelligent responses
+
+### Upcoming Features
+- 👨‍🏫 Profile & Submissions History
+- 🎯 Contests & Leaderboards
 
 ---
 
@@ -20,25 +32,20 @@ A scalable, full-stack Online Judge web application built using the MERN stack (
 
 | Layer       | Tech                     |
 |-------------|--------------------------|
-| Frontend    | React + Vite + Axios     |
+| Frontend    | React + Vite + Monaco Editor |
 | Backend     | Node.js + Express.js     |
 | Database    | MongoDB (with Mongoose)  |
+| Code Execution | Docker + Custom Compiler Service |
 | Auth        | JWT (JSON Web Tokens)    |
-| Compiler    | Docker-based (planned)   |
-| Hosting     | To be hosted on Vercel + Render or EC2 |
+| AI Engine   | Google Gemini API        |
+| Styling     | Tailwind CSS + shadcn/ui |
+| Containerization | Docker & Docker Compose |
 
 ---
 
 ## 📂 Project Structure
 ```bash
-online-judge/
-├── online-judge-frontend/ # React frontend (Vite)
-├── online-judge-backend/ # Express backend (with MongoDB)
-```
-
-## 🔐 Auth Flow
-
-- If not logged in, users are redirected to `/login`
-- After login, JWT is saved in `localStorage` and user is redirected to `/`
-- Register page has toggle to Login and vice versa
-- Logout button clears token and resets auth state
+OJ_project/
+├── frontend/          # React frontend application
+├── backend/           # Express backend API
+└── compiler/          # Docker-based code execution service
