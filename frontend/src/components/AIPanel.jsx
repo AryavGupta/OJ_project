@@ -17,7 +17,12 @@ const AIPanel = ({
   aiResponse,
   setAiResponse,
   aiMode,
-  setAiMode
+  setAiMode,
+  // Limit-related props
+  remaining,
+  setRemaining,
+  limitReached,
+  setLimitReached
 }) => {
   const [mode, setMode] = useState(defaultMode);
   const [loading, setLoading] = useState(false);
@@ -43,11 +48,40 @@ const AIPanel = ({
 
     try {
       const res = await API.post("/ai/assist", { mode, context });
-      setAiResponse(res.data.result);
-      setAiMode(mode); // Update parent state
-      currentModeRef.current = mode; // Update last requested mode
+      
+      // Check if response has the expected structure
+      if (res.data && res.data.result) {
+        setAiResponse(res.data.result);
+        setAiMode(mode); // Update parent state
+        currentModeRef.current = mode; // Update last requested mode
+        
+        // Handle remaining count
+        if (res.data.remaining !== undefined) {
+          setRemaining(res.data.remaining);
+          setLimitReached(res.data.remaining <= 0);
+        }
+      } else {
+        console.error("Unexpected response structure:", res.data);
+        setAiResponse("Unexpected response from AI service.");
+      }
     } catch (err) {
-      setAiResponse("AI response failed.");
+      console.error("AI Request Error:", err);
+      console.error("Error status:", err.response?.status);
+      console.error("Error data:", err.response?.data);
+      
+      // Handle 429 (rate limit) specifically
+      if (err.response?.status === 429) {
+        setLimitReached(true);
+        setRemaining(0);
+        const errorMessage = err.response.data?.error || "Daily AI limit reached. Please try again tomorrow.";
+        setAiResponse(errorMessage);
+      } else if (err.response?.data?.error) {
+        setAiResponse(`Error: ${err.response.data.error}`);
+      } else if (err.message) {
+        setAiResponse(`Network error: ${err.message}`);
+      } else {
+        setAiResponse("AI response failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -169,10 +203,19 @@ const AIPanel = ({
       <div className="flex justify-center flex-shrink-0">
         <button
           onClick={handleAIRequest}
-          disabled={loading}
-          className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg min-w-[120px]"
+          disabled={loading || limitReached}
+          className={`${limitReached
+              ? "bg-gray-300 text-gray-600 border border-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white"
+            } font-semibold px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg min-w-[120px]`}
         >
-          {loading ? "Thinking..." : "🚀 Ask AI"}
+          {loading ? (
+            "Thinking..."
+          ) : limitReached ? (
+            `Limit Reached (${remaining || 0}/5)`
+          ) : (
+            `🚀 Ask AI (${remaining !== null && remaining !== undefined ? remaining : "loading..."}/5)`
+          )}
         </button>
       </div>
 

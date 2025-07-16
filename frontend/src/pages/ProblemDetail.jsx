@@ -38,6 +38,8 @@ int main() {
   // Persistent AI response state
   const [aiResponse, setAiResponse] = useState("");
   const [aiMode, setAiMode] = useState("hint");
+  const [remaining, setRemaining] = useState(null);
+  const [limitReached, setLimitReached] = useState(false);
 
   const [verdict, setVerdict] = useState("");
   const [failedTest, setFailedTest] = useState(null);
@@ -62,7 +64,23 @@ int main() {
         console.error("Error loading problem/test cases: ", err);
       }
     };
+
+    const fetchAIUsage = async () => {
+      try {
+        const res = await API.get('/ai/usage');
+        const remainingCount = res.data.remaining;
+        setRemaining(remainingCount);
+        setLimitReached(remainingCount <= 0);
+      } catch (err) {
+        console.error("Error fetching AI usage: ", err);
+        // Set default values if API call fails
+        setRemaining(5);
+        setLimitReached(false);
+      }
+    };
+
     fetchProblem();
+    fetchAIUsage();
   }, [id]);
 
   // Handle resizing
@@ -354,7 +372,7 @@ int main() {
 
           {/* AI Panel */}
           <div
-            className="fixed top-0 right-0 h-full bg-background shadow-2xl border-l border-border z-50 transition-all duration-300 transform flex"
+            className="fixed top-0 right-0 h-full bg-background shadow-2xl border-l border-border z-50 flex"
             style={{ width: `${aiPanelWidth}px` }}
           >
             {/* Resize Handle */}
@@ -387,6 +405,10 @@ int main() {
                   setAiResponse={setAiResponse}
                   aiMode={aiMode}
                   setAiMode={setAiMode}
+                  remaining={remaining}
+                  setRemaining={setRemaining}
+                  limitReached={limitReached}
+                  setLimitReached={setLimitReached}
                 />
               </div>
             </div>
