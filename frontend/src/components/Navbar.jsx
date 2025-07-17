@@ -18,7 +18,7 @@ function Navbar() {
     <div className="w-full px-6 py-3 bg-background border-b flex justify-between items-center">
       <h1 onClick={() => navigate("/")}
         className='text-xl font-bold cursor-pointer'>
-        Online Judge
+        Codeon
       </h1>
 
       <div className='flex items-center gap-4'>
