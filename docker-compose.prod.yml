@@ -2,36 +2,33 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
+    image: ${FRONTEND_IMAGE}
     container_name: oj-frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
     environment:
-      - VITE_API_URL=http://localhost:5000
-      - VITE_COMPILER_URL=http://localhost:5001
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_COMPILER_URL=${VITE_COMPILER_URL}
 
   backend:
-    build:
-      context: ./backend
+    image: ${BACKEND_IMAGE}
     container_name: oj-backend
     ports:
       - "5000:5000"
     depends_on:
       - compiler
     env_file:
-      - ./backend/.env
+      - .env
 
   compiler:
-    build:
-      context: ./compiler
+    image: ${COMPILER_IMAGE}
     container_name: oj-compiler
     ports:
       - "5001:5001"
     env_file:
-      - ./compiler/.env
+      - .env
 
 networks:
   default:

@@ -6,9 +6,5 @@ node_modules
 logs
 npm-debug.log*
 
-# Environment
-.env
-
 # Git stuff
 .git
-.gitignore
