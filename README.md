@@ -166,6 +166,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with passion by Aryav**
 
 - 🌐 **Live Demo**: [https://codeon.co.in](https://codeon.co.in)
+- 💼 **LinkedIn**: [Connect with me](https://linkedin.com/in/aryavgupta)
 
 ---
 
