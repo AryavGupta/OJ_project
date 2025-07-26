@@ -21,8 +21,21 @@ function Home() {
     }
   };
 
+  const getDifficultyColor = (difficulty) => {
+    switch (difficulty) {
+      case 'Easy':
+        return 'text-green-600 dark:text-green-400';
+      case 'Medium':
+        return 'text-yellow-600 dark:text-yellow-400';
+      case 'Hard':
+        return 'text-red-600 dark:text-red-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-muted text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* ✅ Navbar at the top */}
       <Navbar />
 
@@ -43,74 +56,106 @@ function Home() {
         )}
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-2">Loading problems...</span>
+          </div>
         ) : problems.length === 0 ? (
-          <p>No problems found.</p>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No problems found.</p>
+          </div>
         ) : (
-          <table className='w-full border'>
-            <thead>
-              <tr className='bg-gray-100'>
-                <th className="p-2 border">Title</th>
-                <th className="p-2 border">Difficulty</th>
-                <th className="p-2 border">Tags</th>
-                {user?.userType === 'admin' && <th className="p-2 border w-64">Actions</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {problems.map((problem) => (
-                <tr
-                  key={problem._id}
-                  className="hover:bg-muted cursor-pointer transition duration-200"
-                  onClick={() => navigate(`/problem/${problem._id}`)}
-                >
-                  <td className="p-2 border text-blue-600 flex items-center gap-2">
-                    <span>📘</span> {problem.title}
-                  </td>
-                  <td className='p-2 border'>{problem.difficulty}</td>
-                  <td className='p-2 border'>{problem.tags?.join(', ')}</td>
-
+          <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
+            <table className='w-full'>
+              <thead>
+                <tr className='bg-muted/50 border-b border-border'>
+                  <th className="p-4 text-left font-semibold text-foreground">Title</th>
+                  <th className="p-4 text-left font-semibold text-foreground">Difficulty</th>
+                  <th className="p-4 text-left font-semibold text-foreground">Tags</th>
                   {user?.userType === 'admin' && (
-                    <td className="p-2 border">
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-3 text-xs"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/edit-problem/${problem._id}`);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          className="h-8 px-3 text-xs shadow-red-500/50 shadow-md border border-red-600"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(problem._id);
-                          }}
-                        >
-                          Delete
-                        </Button>
-                        <Button 
-                          size="sm"
-                          className="h-8 px-3 text-xs"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/manage-testcases/${problem._id}`);
-                          }}
-                        >
-                          Test Cases
-                        </Button>
-                      </div>
-                    </td>
+                    <th className="p-4 text-left font-semibold text-foreground w-64">Actions</th>
                   )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {problems.map((problem, index) => (
+                  <tr
+                    key={problem._id}
+                    className={`
+                      border-b border-border hover:bg-muted/30 cursor-pointer transition-colors duration-200
+                      ${index % 2 === 0 ? 'bg-background' : 'bg-muted/10'}
+                    `}
+                    onClick={() => navigate(`/problem/${problem._id}`)}
+                  >
+                    <td className="p-4 border-r border-border">
+                      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
+                        <span>📘</span> 
+                        <span className="hover:underline">{problem.title}</span>
+                      </div>
+                    </td>
+                    <td className={`p-4 border-r border-border font-medium ${getDifficultyColor(problem.difficulty)}`}>
+                      {problem.difficulty}
+                    </td>
+                    <td className='p-4 border-r border-border text-muted-foreground'>
+                      {problem.tags?.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {problem.tags.map((tag, idx) => (
+                            <span 
+                              key={idx}
+                              className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-md border"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground italic">No tags</span>
+                      )}
+                    </td>
+
+                    {user?.userType === 'admin' && (
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-3 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/edit-problem/${problem._id}`);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="h-8 px-3 text-xs bg-red-600 hover:bg-red-700 text-white border-red-600"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(problem._id);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                          <Button 
+                            size="sm"
+                            className="h-8 px-3 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/manage-testcases/${problem._id}`);
+                            }}
+                          >
+                            Test Cases
+                          </Button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

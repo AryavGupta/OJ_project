@@ -1,4 +1,3 @@
-// RegisterPage.jsx
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,68 +39,113 @@ export default function RegisterPage() {
     }
   };
 
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted text-foreground px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 transition-colors">
+      {/* Theme Toggle Button */}
       <div className="absolute top-4 right-4">
-        <Button variant="ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-          {theme === "dark" ? <Sun /> : <Moon />}
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={toggleTheme}
+          className="h-10 w-10 p-0 border border-border hover:bg-muted"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+          <span className="sr-only">Toggle theme</span>
         </Button>
       </div>
-      <Card className="w-full max-w-sm shadow-lg">
+
+      {/* Branding */}
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400">Codeon</h1>
+        <p className="text-muted-foreground mt-2">Your Online Coding Judge</p>
+      </div>
+
+      <Card className="w-full max-w-sm shadow-lg border border-border">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Create an Account</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold">
+            Create an Account
+          </CardTitle>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
-            <Input
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
-              // className="text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <Input
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <Input
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <Input
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white placeholder:text-gray-450"
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <Button type="submit" className="w-full">
+            <div>
+              <Input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="bg-background border-border focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <Input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="bg-background border-border focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-background border-border focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="bg-background border-border focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            
+            <div>
+              <Input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="bg-background border-border focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Register
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">
               Already registered?{" "}
-              <Link to="/login" className="text-primary underline">
+              <Link 
+                to="/login" 
+                className="text-blue-600 dark:text-blue-400 underline hover:no-underline"
+              >
                 Click to login
               </Link>
             </p>

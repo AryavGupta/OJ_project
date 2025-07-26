@@ -11,11 +11,22 @@ export function ThemeProvider({ children, ...props }) {
   }, []);
 
   if (!mounted) {
-    return null;
+    // Show a loading state that matches your app's background to prevent flash
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        {children}
+      </div>
+    );
   }
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem {...props}>
+    <NextThemesProvider 
+      attribute="class" 
+      defaultTheme="light" 
+      enableSystem={false}
+      storageKey="codeon-theme"
+      {...props}
+    >
       {children}
     </NextThemesProvider>
   );
