@@ -2,8 +2,7 @@
 
 A scalable, full-stack Online Judge platform built with the MERN stack. It features real-time code execution, secure Docker-based sandboxing, and intelligent AI-powered debugging tools—all hosted on AWS infrastructure.
 
-Live Preview: [http://65.2.78.180:3000](http://65.2.78.180:3000)  
-Coming Soon: [https://codeon.co.in](https://codeon.co.in)
+**🌐 Live Platform**: [https://codeon.co.in](https://codeon.co.in)
 
 ---
 
@@ -29,39 +28,46 @@ Coming Soon: [https://codeon.co.in](https://codeon.co.in)
 - 🔄 **Resizable Panel** with persistent session memory
 - 🧠 **Powered by Google Gemini API** for contextual intelligence
 
-### DevOps & Infra
+### DevOps & Infrastructure
 - ☁️ **AWS Integration** using:
-  - EC2 (app hosting)
+  - EC2 (application hosting)
   - ECR (Docker image storage)
-- 🐳 **Dockerized Microservices** with `docker-compose.prod.yml`
+- 🐳 **Dockerized Microservices** with production deployment
+- 🔒 **SSL/HTTPS** with Let's Encrypt certificates
+- 🌐 **Custom Domain** with DNS configuration
+- ⚙️ **Nginx Reverse Proxy** for load balancing and routing
 
 ### Frontend Highlights
 - ⚛️ Built using **React + Vite**
 - 💼 **Redux** for global state management
-- ✨ **shadcn/ui** + **Tailwind CSS** for UI styling
-- 🧠 **Monaco Editor** embedded for code editing
+- ✨ **shadcn/ui** + **Tailwind CSS** for modern UI styling
+- 🧠 **Monaco Editor** embedded for professional code editing
+- 🌙 **Dark/Light Theme** support
 
 ### Upcoming Features
 - 👤 **User Profile & Submission History**
 - 🧠 **AI Explanation for Failed Test Cases**
 - 🧮 **Contest Hosting & Leaderboard System**
 - 🛡️ **Enhanced Role-Based Access Control**
+- 📊 **Analytics Dashboard** for problem-solving insights
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer             | Tech Stack                              |
+| Layer             | Technologies                             |
 |------------------|------------------------------------------|
 | Frontend          | React, Vite, Redux, Monaco Editor       |
 | Backend           | Node.js, Express.js                     |
 | Database          | MongoDB (via Mongoose)                  |
-| Auth              | JWT (JSON Web Tokens)                   |
+| Authentication    | JWT (JSON Web Tokens)                   |
 | Code Execution    | Docker, Custom Compiler Service         |
 | AI Integration    | Google Gemini API                       |
 | Styling/UI        | Tailwind CSS, shadcn/ui                 |
 | Containerization  | Docker, Docker Compose                  |
 | Cloud Deployment  | AWS EC2, ECR                            |
+| Web Server        | Nginx (Reverse Proxy)                   |
+| SSL/Security      | Let's Encrypt, HTTPS                    |
 
 ---
 
@@ -69,51 +75,99 @@ Coming Soon: [https://codeon.co.in](https://codeon.co.in)
 
 ```bash
 OJ_project/
-├── frontend/          # React frontend with Redux and Monaco Editor
-├── backend/           # Node.js + Express.js API
-├── compiler/          # Docker-based isolated code runner
-├── docker-compose.yml           # Local dev setup
+├── frontend/                    # React frontend with Redux and Monaco Editor
+├── backend/                     # Node.js + Express.js API
+├── compiler/                    # Docker-based isolated code runner
+├── docker-compose.yml           # Local development setup
 ├── docker-compose.prod.yml      # AWS production deployment
-└── .env               # Environment variables
+└── .env                         # Environment variables
 ```
 
 ---
 
-## 🧪 Local Setup
+## 🧪 Local Development Setup
 
 ```bash
-# 1. Clone the repo
+# 1. Clone the repository
 git clone https://github.com/yourusername/OJ_project.git
 cd OJ_project
 
 # 2. Setup environment files
 cp .env.example .env
+# Update .env with your configuration
 
 # 3. Start services locally
 docker-compose up --build
+
+# 4. Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:5000
+# Compiler Service: http://localhost:5001
 ```
 
 ---
 
-## 🌐 Deployment (AWS)
+## 🌐 Production Deployment
 
-- EC2: Hosts Docker containers (frontend, backend, compiler)
-- ECR: Stores Docker images pushed via CI or manual push
-- Use `docker-compose.prod.yml` for deploying production builds
-- Access via [http://65.2.78.180:3000](http://65.2.78.180:3000)
+### AWS Infrastructure
+- **EC2 Instance**: Hosts all Docker containers
+- **ECR Repository**: Stores Docker images
+- **SSL Certificates**: Let's Encrypt for HTTPS
+- **Domain**: Custom domain with DNS configuration
+- **Nginx**: Reverse proxy for routing and load balancing
+
+### Deployment Process
+```bash
+# 1. Build and push images to ECR
+docker build -t your-ecr-repo/frontend:latest ./frontend
+docker push your-ecr-repo/frontend:latest
+
+# 2. Deploy on EC2
+docker compose -f docker-compose.prod.yml --env-file .env up -d
+
+# 3. Configure Nginx and SSL
+sudo certbot --nginx -d yourdomain.com
+```
+
+---
+
+## 🚀 Key Achievements
+
+- ✅ **Full-Stack Application** with modern tech stack
+- ✅ **Microservices Architecture** using Docker
+- ✅ **Cloud Deployment** on AWS infrastructure
+- ✅ **AI Integration** for intelligent code assistance
+- ✅ **Real-time Code Execution** with multiple languages
+- ✅ **Production-Ready** with SSL and custom domain
+- ✅ **Scalable Design** for future enhancements
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you’d like to change.
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📃 License
 
-[MIT](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Built with passion by Aryav.
+## 👨‍💻 Author
+
+**Built with passion by Aryav**
+
+- 🌐 **Live Demo**: [https://codeon.co.in](https://codeon.co.in)
+- 💼 **LinkedIn**: [Connect with me](www.linkedin.com/in/aryavgupta)
+
+---
+
+*⭐ If you found this project helpful, please give it a star on GitHub!*
