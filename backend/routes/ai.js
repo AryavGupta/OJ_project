@@ -7,7 +7,9 @@ const { protect } = require('../middleware/authMiddleware');
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+// Set GEMINI_MODEL to swap models without rebuilding the image - retired models 404 the whole AI feature.
+// The "-latest" aliases are pinned-model-free but return 503 under load, so pin a concrete model here.
+const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || "models/gemini-3.6-flash" });
 
 // Add this new route for fetching AI usage
 router.get('/usage', protect, async (req, res) => {
