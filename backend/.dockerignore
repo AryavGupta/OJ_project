@@ -8,3 +8,6 @@ npm-debug.log*
 
 # Git stuff
 .git
+
+# Secrets: env comes from compose at runtime, never bake it into the image
+.env
