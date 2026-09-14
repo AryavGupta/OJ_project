@@ -10,20 +10,36 @@ import API from "../services/api";
 import API_COMPILER from "../services/apiCompiler";
 import AIPanel from '../components/AIPanel';
 
-const languages = ["cpp", "python", "java"];
+// Starter code per language. Also drives the dropdown, so the two can't drift apart.
+const BOILERPLATE = {
+  cpp: `// Write your code here
 
-function ProblemDetail() {
-  const { id } = useParams();
-  const [problem, setProblem] = useState(null);
-  const [language, setLanguage] = useState("cpp");
-  const [code, setCode] = useState(`// Write your code here\n
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
     cout << "Hello World!";
     return 0;
-}`);
+}`,
+  python: `# Write your code here
+
+print("Hello World!")`,
+  java: `// Write your code here
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
+}`,
+};
+
+const languages = Object.keys(BOILERPLATE);
+
+function ProblemDetail() {
+  const { id } = useParams();
+  const [problem, setProblem] = useState(null);
+  const [language, setLanguage] = useState("cpp");
+  const [code, setCode] = useState(BOILERPLATE.cpp);
 
   const [sampleTest, setSampleTest] = useState(null);
   const [customInput, setCustomInput] = useState("");
@@ -185,6 +201,15 @@ int main() {
   };
 
 
+  const handleLanguageChange = (nextLanguage) => {
+    const untouched = Object.values(BOILERPLATE).includes(code);
+    if (untouched || window.confirm(`Replace your code with the ${nextLanguage.toUpperCase()} starter code?`)) {
+      setCode(BOILERPLATE[nextLanguage]);
+    }
+    setLanguage(nextLanguage);
+  };
+
+
   if (!problem) return <p>Loading....</p>
 
   return (
@@ -235,9 +260,9 @@ int main() {
           <div className="flex justify-between items-center">
             <h3 className="font-semibold">Compiler</h3>
             <select
-              className="border px-3 py-2 rounded bg-background text-foreground min-w-0 flex-shrink-0"
+              className="border pl-3 pr-8 py-2 rounded bg-background text-foreground min-w-0 flex-shrink-0"
               value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              onChange={(e) => handleLanguageChange(e.target.value)}
             >
               {languages.map((lang) => (
                 <option key={lang} value={lang}>
