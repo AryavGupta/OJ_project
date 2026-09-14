@@ -188,10 +188,10 @@ int main() {
   if (!problem) return <p>Loading....</p>
 
   return (
-    <div className="min-h-screen bg-muted text-foreground">
+    <div className="min-h-screen min-[900px]:h-screen min-[900px]:overflow-hidden flex flex-col bg-muted text-foreground">
       <Navbar />
 
-      <div className="absolute top-2 left-4 z-10">
+      <div className="px-6 pt-4 shrink-0">
         <Button
           variant="outline"
           className="px-3 py-1 h-8 text-sm font-medium text-foreground border-foreground hover:bg-accent"
@@ -201,9 +201,9 @@ int main() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 min-[900px]:grid-cols-2 p-6 gap-6 pt-8">
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-2 p-6 gap-6 pt-4 flex-1 min-h-0">
         {/* Left Panel : Problem Description */}
-        <div className="bg-background p-6 rounded shadow space-y-4 text-left overflow-hidden">
+        <div className="bg-background p-6 rounded shadow space-y-4 text-left min-h-0 overflow-y-auto overflow-x-hidden">
           <h2 className="text-2xl font-bold break-words">{problem.title}</h2>
           <div className="prose prose-sm max-w-none">
             <p className="whitespace-pre-wrap break-words">{problem.statement}</p>
@@ -231,7 +231,7 @@ int main() {
         </div>
 
         {/* Right panel : code editor */}
-        <div className="bg-background p-4 rounded shadow flex flex-col gap-4 min-h-0">
+        <div className="bg-background p-4 rounded shadow flex flex-col gap-4 min-h-0 overflow-y-auto">
           <div className="flex justify-between items-center">
             <h3 className="font-semibold">Compiler</h3>
             <select
@@ -246,10 +246,10 @@ int main() {
               ))}
             </select>
           </div>
-          <div className="flex-1 min-h-0 border rounded overflow-hidden">
+          <div className="border rounded overflow-hidden h-[400px] min-[900px]:h-auto min-[900px]:flex-1 min-[900px]:min-h-[300px]">
 
             <Editor
-              height="400px"
+              height="100%"
               defaultLanguage={language}
               language={language}
               value={code}
